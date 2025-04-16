@@ -1,12 +1,15 @@
 === Easy Notification Bar ===
 Contributors: WPExplorer
 Donate link: https://www.wpexplorer.com/donate/
-Tags: notification, notification bar, notice, notice bar, top bar, banner
+Tags: notification, notification bar, notice, top bar, banner
 Requires at least: 5.2.0
-Requires PHP: 7.0
-Tested up to: 6.5
-Stable Tag: 1.6
-License: GNU Version 2 or Any Later Version.
+Requires PHP: 7.4
+Tested up to: 6.8
+Stable Tag: 1.6.1
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+A simple plugin for displaying a notice at the top of your website that can be closed by the visitor. Completely free and minimal without any upsells.
 
 == Description ==
 Easily add a custom top bar notification message to on your site with live customization options via the WordPress customizer. The plugin allows you to enter your notification bar text as well as an optional button to display next to your text. Perfect for notifying visitors of a current sale, hot product, warnings or other important messages.
@@ -62,6 +65,10 @@ No. This plugin is intended to be free and has everything you need to setup a si
 Yes. The plugin does not collect or store any personal information.
 
 == Changelog ==
+
+= 1.6.1 =
+* Updated the tested up to version number to version 6.8.
+* Added missing License from the plugin header.
 
 = 1.6 =
 * Optimized the way the notice is displayed on load to prevent CLS issues. The plugin now adds an inline script in the header before the notice which checks the localStorage to see if the notice is disabled and if so it will add a classname to the HTML tag to hide it via inline CSS. This allows you to also defer the front.js and front.css scripts without issues. If the notice is disabled the plugin will now also remove the scripts and HTML from the DOM as they are not needed.

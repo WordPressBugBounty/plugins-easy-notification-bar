@@ -1,16 +1,37 @@
 <?php
 /**
- * Plugin Name: Easy Notification Bar
- * Plugin URI: https://wordpress.org/plugins/easy-notification-bar/
- * Description: Easily display a notice at the top of your site.
- * Author: WPExplorer
- * Author URI: https://www.wpexplorer.com/
- * Version: 1.6
- *
- * Text Domain: easy-notification-bar
- * Domain Path: /languages/
+ * Plugin Name:       Easy Notification Bar
+ * Plugin URI:        https://wordpress.org/plugins/easy-notification-bar/
+ * Description:       Easily display a notice at the top of your site.
+ * Version:           1.6.1
+ * Requires at least: 6.3
+ * Requires PHP:      7.4
+ * Author:            WPExplorer
+ * Author URI:        https://www.wpexplorer.com/
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       easy-notification-bar
+ * Domain Path:       /languages/
  */
 
+/*
+Easy Notification Bar is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+any later version.
+
+Easy Notification Bar is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Easy Notification Bar. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
+*/
+
+/**
+ * Prevent direct access to this file.
+ */
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -26,7 +47,7 @@ if ( ! class_exists( 'Easy_Notification_Bar' ) ) {
 		 * @var Holds the plugin version.
 		 * @since 1.4
 		 */
-		public $version = '1.6';
+		public $version = '1.6.1';
 
 		/**
 		 * @var Holds the plugin default settings.
