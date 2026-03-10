@@ -4,8 +4,8 @@ Donate link: https://www.wpexplorer.com/donate/
 Tags: notification, notification bar, notice, top bar, banner
 Requires at least: 5.2.0
 Requires PHP: 7.4
-Tested up to: 6.8
-Stable Tag: 1.6.1
+Tested up to: 6.9
+Stable Tag: 1.7
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,11 @@ No. This plugin is intended to be free and has everything you need to setup a si
 Yes. The plugin does not collect or store any personal information.
 
 == Changelog ==
+
+= 1.7 =
+* Updated the tested up to version number to version 6.9.
+* Added Support for the Total theme color picker.
+* Added Support for gradient background when using Total version 6.6 or greater.
 
 = 1.6.1 =
 * Updated the tested up to version number to version 6.8.

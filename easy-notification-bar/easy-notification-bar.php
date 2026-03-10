@@ -3,7 +3,7 @@
  * Plugin Name:       Easy Notification Bar
  * Plugin URI:        https://wordpress.org/plugins/easy-notification-bar/
  * Description:       Easily display a notice at the top of your site.
- * Version:           1.6.1
+ * Version:           1.7
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            WPExplorer
@@ -632,12 +632,18 @@ if ( ! class_exists( 'Easy_Notification_Bar' ) ) {
 			// Main styles
 			$main_css = '';
 
-			if ( $background_color = $this->get_setting( 'background_color' ) ) {
-				$main_css .= 'background:' . sanitize_hex_color( $background_color ) . ';';
+			if ( $bg_color = $this->get_setting( 'background_color' ) ) {
+				$bg_color_parsed = $this->parse_bg_color( $bg_color );
+				if ( $bg_color_parsed ) {
+					$main_css .= 'background:' . esc_attr( $bg_color_parsed ) . ';';
+				}
 			}
 
 			if ( $text_color = $this->get_setting( 'text_color' ) ) {
-				$main_css .= 'color:' . sanitize_hex_color( $text_color ) . ';';
+				$text_color_parsed = $this->parse_text_color( $bg_color );
+				if ( $text_color_parsed ) {
+					$main_css .= 'color:' . esc_attr( $text_color_parsed ) . ';';
+				}
 			}
 
 			if ( $font_size = $this->get_setting( 'font_size' ) ) {
@@ -662,12 +668,18 @@ if ( ! class_exists( 'Easy_Notification_Bar' ) ) {
 			// Button styles
 			$button_css = '';
 
-			if ( $button_background_color = $this->get_setting( 'button_background_color' ) ) {
-				$button_css .= 'background:' . sanitize_hex_color( $button_background_color ) . ';';
+			if ( $button_bg = $this->get_setting( 'button_background_color' ) ) {
+				$button_bg_parsed = $this->parse_bg_color( $button_bg );
+				if ( $button_bg_parsed ) {
+					$button_css .= 'background:' . esc_attr( $button_bg_parsed ) . ';';
+				}
 			}
 
 			if ( $button_text_color = $this->get_setting( 'button_text_color' ) ) {
-				$button_css .= 'color:' . sanitize_hex_color( $button_text_color ) . ';';
+				$button_text_color_parsed = $this->parse_text_color( $button_text_color );
+				if ( $button_text_color_parsed ) {
+					$button_css .= 'color:' . esc_attr( $button_text_color_parsed ) . ';';
+				}
 			}
 
 			if ( $button_padding = $this->get_setting( 'button_padding' ) ) {
@@ -716,6 +728,14 @@ if ( ! class_exists( 'Easy_Notification_Bar' ) ) {
 		 * @return void
 		 */
 		public function customize_register( $wp_customize ) {
+			if ( class_exists( 'TotalTheme\Customizer\Controls\Color', true ) ) {
+				$color_control_class = 'TotalTheme\Customizer\Controls\Color';
+				$color_control_key   = 'totaltheme_color';
+			} else {
+				$color_control_class = 'WP_Customize_Color_Control';
+				$color_control_key   = 'color';
+			}
+
 			$wp_customize->add_section( 'easy_nb', array(
 				'title'    => esc_html__( 'Easy Notification Bar', 'easy-notification-bar' ),
 				'priority' => 1,
@@ -842,29 +862,30 @@ if ( ! class_exists( 'Easy_Notification_Bar' ) ) {
 			/* Notification Background */
 			$wp_customize->add_setting( 'easy_nb[background_color]', array(
 				'default'           => $this->default_settings['background_color'],
-				'sanitize_callback' => 'sanitize_hex_color',
+				'sanitize_callback' => [ $this, 'customize_sanitize_color' ],
 				'transport'         => 'postMessage',
 			) );
 
-			$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'easy_nb_background_color', array(
-				'label'    => esc_html__( 'Background', 'easy-notification-bar' ),
-				'section'  => 'easy_nb',
-				'settings' => 'easy_nb[background_color]',
-				'type'     => 'color',
+			$wp_customize->add_control( new $color_control_class( $wp_customize, 'easy_nb_background_color', array(
+				'label'          => esc_html__( 'Background', 'easy-notification-bar' ),
+				'section'        => 'easy_nb',
+				'settings'       => 'easy_nb[background_color]',
+				'type'           => $color_control_key,
+				'allow_gradient' => true,
 			) ) );
 
 			/* Notification Color */
 			$wp_customize->add_setting( 'easy_nb[text_color]', array(
 				'default'           => $this->default_settings['text_color'],
-				'sanitize_callback' => 'sanitize_hex_color',
+				'sanitize_callback' => [ $this, 'customize_sanitize_color' ],
 				'transport'         => 'postMessage',
 			) );
 
-			$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'easy_nb_text_color', array(
+			$wp_customize->add_control( new $color_control_class( $wp_customize, 'easy_nb_text_color', array(
 				'label'    => esc_html__( 'Text Color', 'easy-notification-bar' ),
 				'section'  => 'easy_nb',
 				'settings' => 'easy_nb[text_color]',
-				'type'     => 'color',
+				'type'     => $color_control_key,
 			) ) );
 
 			/* Alignment */
@@ -1054,29 +1075,30 @@ if ( ! class_exists( 'Easy_Notification_Bar' ) ) {
 			/* Notification Button Background */
 			$wp_customize->add_setting( 'easy_nb[button_background_color]', array(
 				'default'           => $this->default_settings['button_background_color'],
-				'sanitize_callback' => 'sanitize_hex_color',
+				'sanitize_callback' => [ $this, 'customize_sanitize_color' ],
 				'transport'         => 'postMessage',
 			) );
 
-			$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'easy_nb_button_background_color', array(
-				'label'    => esc_html__( 'Button Background', 'easy-notification-bar' ),
-				'section'  => 'easy_nb',
-				'settings' => 'easy_nb[button_background_color]',
-				'type'     => 'color',
+			$wp_customize->add_control( new $color_control_class( $wp_customize, 'easy_nb_button_background_color', array(
+				'label'          => esc_html__( 'Button Background', 'easy-notification-bar' ),
+				'section'        => 'easy_nb',
+				'settings'       => 'easy_nb[button_background_color]',
+				'type'           => $color_control_key,
+				'allow_gradient' => true,
 			) ) );
 
 			/* Notification Button Color */
 			$wp_customize->add_setting( 'easy_nb[button_text_color]', array(
 				'default'           => $this->default_settings['button_text_color'],
-				'sanitize_callback' => 'sanitize_hex_color',
+				'sanitize_callback' => [ $this, 'customize_sanitize_color' ],
 				'transport'         => 'postMessage',
 			) );
 
-			$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'easy_nb_button_text_color', array(
+			$wp_customize->add_control( new $color_control_class( $wp_customize, 'easy_nb_button_text_color', array(
 				'label'    => esc_html__( 'Button Text Color', 'easy-notification-bar' ),
 				'section'  => 'easy_nb',
 				'settings' => 'easy_nb[button_text_color]',
-				'type'     => 'color',
+				'type'     => $color_control_key,
 			) ) );
 
 			/* Notification Button Font Weight */
@@ -1297,6 +1319,57 @@ if ( ! class_exists( 'Easy_Notification_Bar' ) ) {
 		private static function get_inline_script(): string {
 			$local_storage_key_name_safe = sanitize_text_field( self::get_local_storage_key_name() );
 			return "(function(){const html = document.querySelector('html');if('undefined' !== typeof localStorage && 'yes' === localStorage.getItem('{$local_storage_key_name_safe}') ){html.classList.add('easy-notification-bar-is-disabled');}else{html.classList.add('has-easy-notification-bar');}const script = document.querySelector('#easy-notification-bar-inline-js-after');if(script){script.remove();}}());";
+		}
+
+		/**
+		 * Parses a background color for frontend css
+		 * 
+		 * @since 1.7
+		 * @access private
+		 * @return string
+		 */
+		private function parse_bg_color( $bg_color = '' ) {
+			if ( function_exists( 'totaltheme_call_static' )
+				&& ( str_starts_with( $bg_color, 'type:radial-gradient' )
+					|| str_starts_with( $bg_color, 'type:linear-gradient' )
+				)
+			) {
+				return (string) totaltheme_call_static( 'Helpers\Gradient_Parser', 'render_css', $bg_color );
+			} elseif ( function_exists( 'wpex_parse_color' ) ) {
+				return wpex_parse_color( $bg_color );
+			} else {
+				return sanitize_hex_color( $bg_color );
+			}
+		}
+
+		/**
+		 * Parses text color for frontend css
+		 * 
+		 * @since 1.7
+		 * @access private
+		 * @return string
+		 */
+		private function parse_text_color( $bg_color = '' ) {
+			if ( function_exists( 'wpex_parse_color' ) ) {
+				return wpex_parse_color( $bg_color );
+			} else {
+				return sanitize_hex_color( $bg_color );
+			}
+		}
+
+
+		/**
+		 * Sanitize Color for saving in the Customizer.
+		 * 
+		 * @since 1.7
+		 * @access public
+		 * @return string
+		 */
+		public function customize_sanitize_color( $input, $setting ) {
+			if ( is_callable( 'TotalTheme\Customizer\Sanitize_Callbacks::color' ) ) {
+				return TotalTheme\Customizer\Sanitize_Callbacks::color( $input, $setting );
+			}
+			return sanitize_hex_color( $input );
 		}
 
 		/**
